@@ -7,12 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-class Data{
-    int[][] brr;
-    Data(int[][] brr){
-        this.brr=brr;
-    }
-}
 class Pair{
     int r,c;
     Pair(int r, int c){
@@ -36,15 +30,16 @@ public class 감시_15683 {
         return brr;
     }
 
-    static Data watch(int[][] arr, int d, int r, int c){
-        int[][] brr = makeArr(arr);
-
+    static void watch(int[][] arr, int d, int r, int c){
         int rr=r+dir[d][0];
         int cc=c+dir[d][1];
-        while(rr>=0 && cc>=0 && rr<N && cc<M &&(brr[rr][cc]==0||brr[rr][cc]==-1)){
-                brr[rr][cc] = -1;
+        while(rr>=0 && cc>=0 && rr<N && cc<M &&(arr[rr][cc]!=6)) {
+            if (arr[rr][cc] == 0) {
+                arr[rr][cc]=-1;
             }
-        return new Data(brr);
+            rr+=dir[d][0];
+            cc+=dir[d][1];
+        }
     }
 
     public static void main(String[] args) throws FileNotFoundException {
@@ -69,7 +64,7 @@ public class 감시_15683 {
         System.out.println(min);
     }
     static void DFS(int depth, int[][] arr){
-        if(depth==cctv.size()-1){
+        if(depth==cctv.size()){
             int count=0;
             for(int i=0;i<N;i++){
                 for(int j=0;j<M;j++){
@@ -88,67 +83,52 @@ public class 감시_15683 {
         switch(arr[r][c]){
             case 1:
                 for(int i=0;i<4;i++){
-                    Data data=watch(arr,i,r,c);
-                    DFS(depth+1,data.brr);
+                    int[][] brr=makeArr(arr);
+                    watch(brr,i,r,c);
+                    DFS(depth+1,brr);
                 }
                 break;
             case 2:
-                Data data=watch(arr,0,r,c);
-                Data data2=watch(data.brr,2,r,c);
-                DFS(depth+1,data2.brr);
-
-                Data data3=watch(arr,1,r,c);
-                Data data4=watch(data3.brr,3,r,c);
-                DFS(depth+1,data4.brr);
+                for(int i=0;i<2;i++) {
+                    int[][] brr = makeArr(arr);
+                    watch(brr, i, r, c);
+                    watch(brr, i+2, r, c);
+                    DFS(depth + 1, brr);
+                }
                 break;
             case 3:
-                Data data10=watch(arr,0,r,c);
-                Data data11=watch(data10.brr,1,r,c);
-                DFS(depth+1,data11.brr);
+                for(int i=0;i<3;i++){
+                    int[][] brr = makeArr(arr);
+                    watch(brr, i, r, c);
+                    watch(brr, i+1, r, c);
+                    DFS(depth + 1, brr);
+                }
 
-                Data data12=watch(arr,1,r,c);
-                Data data13=watch(data12.brr,2,r,c);
-                DFS(depth+1,data13.brr);
-
-                Data data14=watch(arr,2,r,c);
-                Data data15=watch(data14.brr,3,r,c);
-                DFS(depth+1,data15.brr);
-
-                Data data16=watch(arr,3,r,c);
-                Data data17=watch(data16.brr,0,r,c);
-                DFS(depth+1,data17.brr);
+                int[][] brr= makeArr(arr);
+                watch(brr, 3, r, c);
+                watch(brr, 0, r, c);
+                DFS(depth + 1, brr);
                 break;
 
             case 4:
-                Data data100=watch(arr,0,r,c);
-                Data data101=watch(data100.brr,1,r,c);
-                Data data102=watch(data101.brr,2,r,c);
-                DFS(depth+1,data102.brr);
-
-                Data data200=watch(arr,1,r,c);
-                Data data201=watch(data200.brr,2,r,c);
-                Data data202=watch(data201.brr,3,r,c);
-                DFS(depth+1,data202.brr);
-
-                Data data300=watch(arr,2,r,c);
-                Data data301=watch(data300.brr,3,r,c);
-                Data data302=watch(data301.brr,0,r,c);
-                DFS(depth+1,data302.brr);
-
-                Data data400=watch(arr,1,r,c);
-                Data data401=watch(data400.brr,3,r,c);
-                Data data402=watch(data401.brr,0,r,c);
-                DFS(depth+1,data402.brr);
+                for(int i=0;i<4;i++){
+                    int[][] crr = makeArr(arr);
+                    for(int j=0;j<4;j++){
+                        if(j!=i) {
+                            watch(crr, j, r, c);
+                        }
+                    }
+                    DFS(depth + 1, crr);
+                }
                 break;
 
             case 5:
-                Data data69=watch(arr,0,r,c);
-                Data data79=watch(data69.brr,1,r,c);
-                Data data89=watch(data79.brr,2,r,c);
-                Data data99=watch(data89.brr,3,r,c);
-                DFS(depth+1,data99.brr);
+                int[][] drr=makeArr(arr);
+                for(int j=0;j<4;j++){
+                   watch(drr, j, r, c);
+                }
+                DFS(depth+1,drr);
                 break;
-
         }
     }
 }
